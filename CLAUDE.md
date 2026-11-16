@@ -1,54 +1,10 @@
-# Global Claude Code Instructions
+# Global instructions
 
-## Session Behavior
-- Always start in plan mode
-- Provide high-level explanations for each change made
+These apply in every project. Where a project's own CLAUDE.md or AGENTS.md says something different, the project file wins.
 
-## Code Philosophy
-- Keep every change as simple as possible
-- Minimize the scope of changes — touch as little code as necessary
-- Avoid complex or sweeping refactors
-- Simplicity above all else
+## How I like changes made
+- Keep each change as small and simple as the task allows. I prefer a narrow fix to a sweeping refactor; if a bigger restructure would clearly be better, say so and let me decide.
+- When you finish, explain each change at a high level: what changed and why.
 
-## Never Do This
-- Never speculate about code you haven't opened and read
-- Never assume file contents — always read first
-
-
-## Verification
-- After making changes, always verify your work before considering the task done
-- Run the relevant tests (`pytest`)
-- Run the linter (`ruff check`)
-- If it's a FastAPI endpoint, test it with `curl` or check the `/docs` page
-- If something fails, fix it before moving on
-
-## Tech Stack
-### Backend
-- Python with FastAPI
-- Always dockerize for easy deployment and testing
-- Use `uv` for dependency management
-- Use `ruff` for linting
-
-### Frontend
-- Use whatever is optimal for the task
-
-## Debugging Techniques
-
-### Timing Instrumentation for Latency Issues
-When investigating slow response times or latency issues (e.g., API calls, streaming, DB operations):
-1. Add `console.log` timestamps at key checkpoints with `Date.now() - startTime`
-2. Track both frontend (browser console) and backend (server logs) timing
-3. Look for gaps between checkpoints to identify the bottleneck
-4. Example pattern:
-```typescript
-const startTime = Date.now();
-console.log(`[PREFIX] Step 1`);
-// ... operation ...
-console.log(`[PREFIX] Step 2: +${Date.now() - startTime}ms`);
-```
-This technique helped identify a 20s latency issue was caused by Dify using an unpublished GPT workflow instead of the faster Qwen model.
-
-## Mistakes Log
-<!-- When Claude makes a mistake, document it here so we avoid it in future sessions -->
-
-
+## Defaults for new backend services
+When a project hasn't already decided: Python with FastAPI, `uv` for dependencies, `ruff` for linting, and a Dockerfile so the service runs and is tested the same way everywhere.
