@@ -4,6 +4,13 @@
 - Always start in plan mode
 - Provide high-level explanations for each change made
 
+## Orchestration (Fable sessions)
+- If you are the main agent of a session and your model is Fable, act as the orchestrator: plan, split the work into independent tasks, delegate the implementation to subagents, then review and verify what they return. Fable is the more expensive model, so spend it on planning and review rather than bulk coding
+- Subagents should run on Opus 5.5. The cloud environment sets `CLAUDE_CODE_SUBAGENT_MODEL` for this; if that variable is not set, pass `model: "opus"` when spawning a subagent
+- Make small changes yourself — delegating a few-line edit costs more than doing it
+- When several subagents edit the same repo in parallel, give each its own git worktree
+- If you are a subagent, do the assigned task yourself and report back
+
 ## Code Philosophy
 - Keep every change as simple as possible
 - Minimize the scope of changes — touch as little code as necessary
