@@ -1,61 +1,20 @@
-# Global Claude Code Instructions
+# Global instructions
 
-## Session Behavior
-- Always start in plan mode
-- Provide high-level explanations for each change made
+These apply in every project. Where a project's own CLAUDE.md or AGENTS.md says something different, the project file wins.
 
-## Orchestration (Fable sessions)
-- If you are the main agent of a session and your model is Fable, act as the orchestrator: plan, split the work into independent tasks, delegate the implementation to subagents, then review and verify what they return. Fable is the more expensive model, so spend it on planning and review rather than bulk coding
-- Subagents should run on Opus 5.5. The cloud environment sets `CLAUDE_CODE_SUBAGENT_MODEL` for this; if that variable is not set, pass `model: "opus"` when spawning a subagent
-- Make small changes yourself — delegating a few-line edit costs more than doing it
-- When several subagents edit the same repo in parallel, give each its own git worktree
-- If you are a subagent, do the assigned task yourself and report back
+## How I like changes made
+- Keep each change as small and simple as the task allows. I prefer a narrow fix to a sweeping refactor; if a bigger restructure would clearly be better, say so and let me decide.
+- When you finish, explain each change at a high level: what changed and why.
 
-## Code Philosophy
-- Keep every change as simple as possible
-- Minimize the scope of changes — touch as little code as necessary
-- Avoid complex or sweeping refactors
-- Simplicity above all else
+## Fable sessions: orchestrate
+When you are the main agent and your model is Fable, work as the orchestrator: plan the work, hand independent pieces to subagents, then review what comes back. Delegate when pieces can run in parallel, when a job means reading a lot that you only need the conclusion of, or when you want a review that hasn't seen your reasoning. Do small or tightly coupled changes yourself; handing the same task to a subagent doesn't make the answer better.
+- For multi-part work, show me the split before dispatching.
+- Implementation goes to the built-in `general-purpose` agent. Give each one a brief that stands alone: the goal, the files involved, what done looks like, and the checks to run.
+- Subagents run on Opus 5.5 (the cloud environment sets `CLAUDE_CODE_SUBAGENT_MODEL`); if it isn't set, pass `model: "opus"`.
+- Parallel subagents editing the same repo each get their own git worktree.
+- Before reporting done, run `verifier`, and `code-reviewer` for anything beyond a trivial change.
 
-## Never Do This
-- Never speculate about code you haven't opened and read
-- Never assume file contents — always read first
+If you are a subagent, do the task yourself and report back.
 
-
-## Verification
-- After making changes, always verify your work before considering the task done
-- Run the relevant tests (`pytest`)
-- Run the linter (`ruff check`)
-- If it's a FastAPI endpoint, test it with `curl` or check the `/docs` page
-- If something fails, fix it before moving on
-
-## Tech Stack
-### Backend
-- Python with FastAPI
-- Always dockerize for easy deployment and testing
-- Use `uv` for dependency management
-- Use `ruff` for linting
-
-### Frontend
-- Use whatever is optimal for the task
-
-## Debugging Techniques
-
-### Timing Instrumentation for Latency Issues
-When investigating slow response times or latency issues (e.g., API calls, streaming, DB operations):
-1. Add `console.log` timestamps at key checkpoints with `Date.now() - startTime`
-2. Track both frontend (browser console) and backend (server logs) timing
-3. Look for gaps between checkpoints to identify the bottleneck
-4. Example pattern:
-```typescript
-const startTime = Date.now();
-console.log(`[PREFIX] Step 1`);
-// ... operation ...
-console.log(`[PREFIX] Step 2: +${Date.now() - startTime}ms`);
-```
-This technique helped identify a 20s latency issue was caused by Dify using an unpublished GPT workflow instead of the faster Qwen model.
-
-## Mistakes Log
-<!-- When Claude makes a mistake, document it here so we avoid it in future sessions -->
-
-
+## Defaults for new backend services
+When a project hasn't already decided: Python with FastAPI, `uv` for dependencies, `ruff` for linting, and a Dockerfile so the service runs and is tested the same way everywhere.
